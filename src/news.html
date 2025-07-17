@@ -1,0 +1,104 @@
+<!-- news.html -->
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actualités Financières - FinAnalyse</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <a href="index.html" class="flex items-center">
+            <i class="fas fa-chart-line text-blue-600 text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-gray-800">FinAnalyse</span>
+          </a>
+          <div class="flex items-center space-x-4">
+            <a
+              href="index.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Accueil</a
+            >
+            <a
+              href="news.html"
+              class="text-blue-600 border-b-2 border-blue-600 px-3 py-2 font-semibold"
+              >Actualités</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 fade-in">
+      <h1 class="text-4xl font-bold text-gray-800 mb-8">
+        Dernières Actualités Financières
+      </h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Colonne Moneywise -->
+        <div id="news-moneywise" class="space-y-4">
+          <h2 class="text-2xl font-semibold text-gray-700 border-b-2 pb-2">
+            Moneywise
+          </h2>
+          <div class="loader">Chargement...</div>
+        </div>
+
+        <!-- Colonne GOBankingRates -->
+        <div id="news-gobankingrates" class="space-y-4">
+          <h2 class="text-2xl font-semibold text-gray-700 border-b-2 pb-2">
+            GOBankingRates
+          </h2>
+          <div class="loader">Chargement...</div>
+        </div>
+
+        <!-- Colonne Morningstar -->
+        <div id="news-morningstar" class="space-y-4">
+          <h2 class="text-2xl font-semibold text-gray-700 border-b-2 pb-2">
+            Morningstar
+          </h2>
+          <div class="loader">Chargement...</div>
+        </div>
+
+        <!-- Colonne Barchart -->
+        <div id="news-barchart" class="space-y-4">
+          <h2 class="text-2xl font-semibold text-gray-700 border-b-2 pb-2">
+            Barchart
+          </h2>
+          <div class="loader">Chargement...</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p>© 2025 FinAnalyse. Toutes les données sont à titre informatif.</p>
+      </div>
+    </footer>
+
+    <script src="js/news.js"></script>
+  </body>
+</html>

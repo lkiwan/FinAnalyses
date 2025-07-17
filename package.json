@@ -1,0 +1,23 @@
+{
+  "name": "finanalyse",
+  "version": "1.0.0",
+  "main": "gulpfile.js",
+  "scripts": {
+    "start": "npx gulp",
+    "build": "npx gulp build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "^10.4.21",
+    "gulp": "^5.0.1",
+    "gulp-clean": "^0.4.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-terser": "^2.1.0",
+    "tailwindcss": "^4.1.11"
+  }
+}
