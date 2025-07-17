@@ -80,7 +80,7 @@ async function analyzeCompany(ticker) {
   document.getElementById("analysis-content").classList.add("hidden");
 
   try {
-    const API_BASE = "http://localhost:8000/api";
+    const API_BASE = "https://finanalyse-api.onrender.com/api";
     const [finRes, histRes, advRes, divRes] = await Promise.all([
       fetch(`${API_BASE}/entreprise/${ticker}`),
       fetch(`${API_BASE}/historique/${ticker}`),

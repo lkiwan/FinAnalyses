@@ -1,6 +1,6 @@
 // js/news.js - VERSION AMÉLIORÉE
 
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "https://finanalyse-api.onrender.com/api";
 
 /**
  * Crée le HTML pour une seule carte d'article d'actualité.

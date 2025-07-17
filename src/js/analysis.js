@@ -1,7 +1,7 @@
 // js/analysis.js - VERSION FINALE ET COMPLÈTE EN JAVASCRIPT PUR
 
 // --- CONSTANTES ET VARIABLES GLOBALES ---
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = "https://finanalyse-api.onrender.com/api";
 let currentCompanyData = null; // Stocke les données de l'entreprise principale pour la comparaison
 
 // --- FONCTIONS UTILITAIRES ---
