@@ -1,6 +1,5 @@
-// gulpfile.js
+// gulpfile.js - VERSION FINALE CORRIGÉE
 
-// 1. Import Gulp and plugins
 const gulp = require('gulp');
 const htmlmin = require('gulp-htmlmin');
 const terser = require('gulp-terser');
@@ -9,67 +8,66 @@ const tailwindcss = require('tailwindcss');
 const autoprefixer = require('autoprefixer');
 const clean = require('gulp-clean');
 
-// 2. Define file paths for clarity
+// Les chemins de fichiers restent les mêmes
 const paths = {
   html: 'src/**/*.html',
-  css: 'src/css/style.css', // We will create this file
+  css: 'src/css/style.css',
   js: 'src/js/**/*.js',
   dist: 'dist'
 };
 
-// 3. Create Gulp tasks
-
-// A task to clean the dist folder before a new build
+// La tâche de nettoyage reste la même
 function cleanDist() {
   return gulp.src(paths.dist, { read: false, allowEmpty: true })
     .pipe(clean());
 }
 
-// A task to copy and minify HTML files
+// La tâche HTML reste la même
 function html() {
   return gulp.src(paths.html)
     .pipe(htmlmin({ collapseWhitespace: true, removeComments: true }))
     .pipe(gulp.dest(paths.dist));
 }
 
-// A task to compile Tailwind CSS
-
+// --- DÉBUT DE LA CORRECTION ---
+// Nous modifions légèrement la tâche CSS pour assurer la compatibilité
 function css() {
+  // Le 'require' ici s'assure que le fichier de configuration est bien chargé
+  // par PostCSS au bon moment, ce qui peut résoudre des problèmes de blocage.
+  const tailwindConfig = require('./tailwind.config.js');
+
   return gulp.src(paths.css)
     .pipe(postcss([
-      tailwindcss, // <-- Il suffit de passer la variable tailwindcss directement
-      autoprefixer
+      tailwindcss(tailwindConfig), // On passe explicitement la configuration
+      autoprefixer()
     ]))
     .pipe(gulp.dest(`${paths.dist}/css`));
 }
+// --- FIN DE LA CORRECTION ---
 
-// A task to minify JavaScript files
+// La tâche JS reste la même
 function js() {
   return gulp.src(paths.js)
     .pipe(terser())
     .pipe(gulp.dest(`${paths.dist}/js`));
 }
 
-// A task to watch for file changes and re-run tasks
+// La tâche de surveillance reste la même
 function watch() {
   gulp.watch(paths.html, html);
-  gulp.watch(['tailwind.config.js', paths.html, paths.css, paths.js], css); // Re-run CSS if config, html, css, or js changes
+  gulp.watch(['tailwind.config.js', paths.html, paths.css, paths.js], css);
   gulp.watch(paths.js, js);
 }
 
-// 4. Define the main build and default tasks
-
-// The `build` task will run all optimizations for production
+// Les tâches de build et dev restent les mêmes
 const build = gulp.series(cleanDist, gulp.parallel(html, css, js));
-
-// The `default` task will be for development (runs a build and then watches for changes)
 const dev = gulp.series(build, watch);
 
-// Export tasks to be used from the command line
+// L'exportation des tâches reste la même
 exports.html = html;
 exports.css = css;
 exports.js = js;
 exports.clean = cleanDist;
 exports.watch = watch;
 exports.build = build;
-exports.default = dev; // `gulp` command will run the `dev` task
+exports.default = dev;
