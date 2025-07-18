@@ -20,6 +20,7 @@ async function fetchAndDisplayNews() {
             throw new Error(errorData.detail || `Erreur HTTP: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Données reçues de l'API:", data);
         container.innerHTML = ''; // Vider le message de chargement
 
         if (data.articles && data.articles.length > 0) {
