@@ -4,8 +4,24 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 import pandas as pd
+import requests
 
 app = FastAPI()
+MARKETAUX_API_KEY = "baEVwwUiQCp6G1zeJNVG93KqcFWrgz5tp0qrqQ2I" 
+@app.get("/api/news")
+def get_real_time_news():
+    # (le code de la fonction qui appelle Marketaux)
+    # ...
+    url = f"https://api.marketaux.com/v1/news/all?countries=us,fr&filter_entities=true&limit=15&language=en&api_token={MARKETAUX_API_KEY}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status() 
+        data = response.json()
+        # On adapte la structure de la réponse pour le frontend
+        return {"articles": data.get("data", [])}
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur API Marketaux: {e}")
+        raise HTTPException(status_code=503, detail="Le service d'actualités est temporairement indisponible.")
 # Liste des origines autorisées à faire des requêtes vers notre API.
 # C'est ici que nous donnons la permission à notre serveur de fichiers HTML.
 origins = [
