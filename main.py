@@ -1,11 +1,18 @@
 # main.py - VERSION COMPLÈTE ET CORRIGÉE
-
+import os  # <-- AJOUTER CET IMPORT
+from dotenv import load_dotenv  # <-- AJOUTER CET IMPORT
+import google.generativeai as genai
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 import pandas as pd
 import requests
+load_dotenv()
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
+# Configurer l'API de Google Gemini
+genai.configure(api_key=GOOGLE_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-flash')
 app = FastAPI()
 MARKETAUX_API_KEY = "baEVwwUiQCp6G1zeJNVG93KqcFWrgz5tp0qrqQ2I" 
 @app.get("/api/news")
@@ -37,6 +44,40 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- NOUVELLE FONCTION D'ANALYSE PAR IA ---
+def generate_ai_analysis_comment(data: dict) -> str:
+    """
+    Utilise l'IA Gemini pour générer un commentaire d'analyse financière.
+    """
+    try:
+        # On prépare un "prompt" clair et détaillé pour l'IA
+        prompt = f"""
+        En tant qu'analyste financier pour des investisseurs débutants, rédige une courte analyse (3-4 phrases) pour l'entreprise {data.get('name', 'N/A')}.
+        Le ton doit être neutre et informatif. Utilise un langage simple.
+        Voici les données financières clés :
+        - Prix de l'action : ${data.get('price', 'N/A'):.2f}
+        - Chiffre d'affaires annuel : {data.get('revenue', 0) / 1e9:.1f} milliards de dollars
+        - Bénéfice net annuel : {data.get('netIncome', 0) / 1e9:.1f} milliards de dollars
+        - Ratio Cours/Bénéfice (PER) : {data.get('peRatio', 'N/A'):.1f}
+        - Rentabilité des capitaux propres (ROE) : {data.get('roe', 0) * 100:.1f}%
+        - Marge nette : {data.get('netMargin', 0) * 100:.1f}%
+
+        Basé sur ces données, mentionne un point fort (par exemple, une forte rentabilité ou une faible valorisation) et un point de vigilance (par exemple, une valorisation élevée ou une faible marge). Termine par une phrase de conclusion neutre.
+        Ne donne pas de conseil d'investissement.
+        """
+        
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Erreur lors de la génération par l'IA: {e}")
+        return "Le commentaire d'analyse par l'IA n'est pas disponible pour le moment."
+
+
+
+
+
+
 # --- DONNÉES SIMULÉES POUR LES ACTUALITÉS ---
 MOCK_NEWS = {
     "moneywise": [
@@ -83,16 +124,24 @@ def get_financial_data(ticker: str):
         return {
             "name": info.get("longName", ticker.upper()),
             "symbol": info.get("symbol", ticker.upper()),
+            "logo_url": info.get("logo_url", ""),
             "sector": info.get("sector", "N/A"),
             "country": info.get("country", "N/A"),
             "price": info.get("currentPrice") or info.get("previousClose"),
-            "revenue": latest_revenue or info.get("totalRevenue"),
-            "netIncome": latest_net_income or info.get("netIncomeToCommon"),
+            "revenue": info.get("totalRevenue"),
+            "netIncome": info.get("netIncomeToCommon"),
             "peRatio": info.get("trailingPE"),
             "roe": info.get("returnOnEquity"),
-            "debtToEquity": info.get("debtToEquity"), # Note: debtToEquity peut être None
-            "netMargin": info.get("profitMargins")
+            "netMargin": info.get("profitMargins"),
+            "dividendYield": info.get('dividendYield'),
+            "financialScore": 7.5
         }
+# ON APPELLE LA NOUVELLE FONCTION IA !
+        financial_data["analysisComment"] = generate_ai_analysis_comment(financial_data)
+        
+        return financial_data
+        
+          
     except HTTPException as e:
         raise e
     except Exception as e:

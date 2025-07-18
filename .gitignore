@@ -1,0 +1,29 @@
+# Fichier .gitignore pour le projet FinAnalyse
+
+# 1. Ignorer les secrets et la configuration locale
+# -------------------------------------------------
+# Ne jamais envoyer le fichier contenant nos clés API sur GitHub
+.env
+
+# 2. Ignorer les dépendances et les fichiers générés
+# --------------------------------------------------
+# Le dossier des outils Node.js (peut être recréé avec "npm install")
+node_modules/
+
+# Le dossier du site web construit (peut être recréé avec "npx gulp build")
+dist/
+
+# 3. Ignorer les fichiers temporaires de Python
+# ---------------------------------------------
+# Le dossier de cache de Python
+__pycache__/
+*.pyc
+
+# 4. Ignorer les fichiers spécifiques à l'éditeur de code (ex: VS Code)
+# --------------------------------------------------------------------
+.vscode/
+
+# 5. Ignorer les fichiers du système d'exploitation
+# -----------------------------------------------
+.DS_Store
+Thumbs.db

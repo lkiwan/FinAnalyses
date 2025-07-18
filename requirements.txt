@@ -2,3 +2,5 @@ fastapi
 uvicorn
 yfinance
 requests
+google-generativeai  
+python-dotenv     
