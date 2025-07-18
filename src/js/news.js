@@ -1,6 +1,5 @@
 // Dans src/js/news.js
-// VERSION DE PRODUCTION (INCORRECTE POUR LE LOCAL)
-const API_BASE = "https://finanalyses.onrender.com/api";
+
 
 function createNewsCard(article) {
     // Cette fonction est maintenant plus robuste.

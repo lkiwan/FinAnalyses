@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 import pandas as pd
 import requests
+from pydantic import BaseModel 
 load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
@@ -44,6 +45,42 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+chat_sessions = {}
+
+# On définit la structure des messages que le frontend va nous envoyer
+class ChatMessage(BaseModel):
+    session_id: str
+    message: str
+
+@app.post("/api/chat")
+def chat_with_ai(chat_message: ChatMessage):
+    session_id = chat_message.session_id
+    user_message = chat_message.message
+
+    # Vérifie si une session de chat existe déjà pour cet utilisateur
+    if session_id not in chat_sessions:
+        # Si non, on en crée une nouvelle avec le contexte initial
+        print(f"Création d'une nouvelle session de chat pour : {session_id}")
+        chat_sessions[session_id] = model.start_chat(history=[
+            {"role": "user", "parts": ["Tu es FinAnalyse AI, un assistant financier expert..."]},
+            {"role": "model", "parts": ["Bonjour ! Comment puis-je vous aider..."]}
+        ])
+
+    # On récupère la session de l'utilisateur
+    current_chat_session = chat_sessions[session_id]
+
+    try:
+        # On envoie le message de l'utilisateur à sa session de chat
+        response = current_chat_session.send_message(user_message)
+        # On renvoie la réponse de l'IA au format JSON
+        return {"response": response.text}
+    except Exception as e:
+        print(f"Erreur lors de la conversation avec l'IA: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la communication avec l'assistant IA.")
+
+
 
 # --- NOUVELLE FONCTION D'ANALYSE PAR IA ---
 def generate_ai_analysis_comment(data: dict) -> str:

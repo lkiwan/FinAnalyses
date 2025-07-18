@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat avec FinAnalyse AI</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-gray-100 flex flex-col h-screen">
+    <!-- (Ajoutez votre barre de navigation ici) -->
+    <main class="flex-1 p-4 overflow-y-auto">
+      <div id="chat-box" class="space-y-4">
+        <!-- Les messages du chat apparaîtront ici -->
+      </div>
+    </main>
+    <footer class="p-4 bg-white border-t">
+      <div class="flex gap-2">
+        <input
+          type="text"
+          id="chat-input"
+          class="flex-1 p-2 border rounded"
+          placeholder="Posez votre question..."
+        />
+        <button id="send-btn" class="bg-blue-600 text-white px-4 py-2 rounded">
+          Envoyer
+        </button>
+      </div>
+    </footer>
+    <script src="js/chat.js"></script>
+  </body>
+</html>
