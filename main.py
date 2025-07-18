@@ -9,15 +9,14 @@ app = FastAPI()
 # Liste des origines autorisées à faire des requêtes vers notre API.
 # C'est ici que nous donnons la permission à notre serveur de fichiers HTML.
 origins = [
-    "http://localhost:8080", # Le serveur `python -m http.server 8080`
-    "http://localhost",
-    "http://127.0.0.1:8080", # Parfois nécessaire
+    "https://finanalyses.pages.dev",  # L'adresse de votre site en ligne
+    "http://localhost:8080",      # Utile pour le développement local
+    "http://127.0.0.1:8080",
 ]
 
-# Configuration du CORS pour autoriser toutes les origines
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,      # On utilise notre nouvelle liste
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
