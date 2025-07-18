@@ -13,20 +13,27 @@ import pandas as pd
 # --- CONFIGURATION SÉCURISÉE DES CLÉS API ---
 # Charge les variables depuis le fichier .env (pour le local) ou l'environnement (pour Render)
 # --- DÉBUT DU BLOC DE DÉBOGAGE ---
-print("--- DÉBUT DU DÉBOGAGE DES VARIABLES D'ENVIRONNEMENT ---")
+
+
 load_dotenv()
-google_key_from_env = os.getenv('GOOGLE_API_KEY')
-marketaux_key_from_env = os.getenv('MARKETAUX_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+MARKETAUX_API_KEY = os.getenv('MARKETAUX_API_KEY')
 
-print(f"La clé Google lue est du type : {type(google_key_from_env)}")
-if google_key_from_env:
-    print(f"Clé Google trouvée ! Elle commence par : '{google_key_from_env[:5]}...' et se termine par '...{google_key_from_env[-5:]}'")
-else:
-    print("Clé Google NON TROUVÉE (la variable est vide ou None).")
+model = None
 
-print(f"La clé Marketaux lue est du type : {type(marketaux_key_from_env)}")
-if marketaux_key_from_env:
-    print(f"Clé Marketaux trouvée ! Elle commence par : '{marketaux_key_from_env[:5]}...'")
+
+if GOOGLE_API_KEY:
+    try:
+        genai.configure(api_key=GOOGLE_API_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        print("INFO: Clé API Google trouvée. Le service IA est activé.")
+    except Exception as e:
+        print(f"ERREUR: La configuration de l'IA a échoué. Raison : {e}")
+        model = None # On s'assure que le modèle est None en cas d'erreur
+else: print("AVERTISSEMENT: La clé API Google n'est pas configurée. Le service IA est désactivé.")
+
+if MARKETAUX_API_KEY:
+    print(f"Clé Marketaux trouvée ! Elle commence par : '{MARKETAUX_API_KEY[:5]}...'")
 else:
     print("Clé Marketaux NON TROUVÉE.")
 
@@ -34,8 +41,8 @@ print("--- FIN DU DÉBOGAGE ---")
 # --- FIN DU BLOC DE DÉBOGAGE ---
 
 
-GOOGLE_API_KEY = google_key_from_env
-MARKETAUX_API_KEY = marketaux_key_from_env
+GOOGLE_API_KEY = GOOGLE_API_KEY
+MARKETAUX_API_KEY = MARKETAUX_API_KEY
 
 # --- INITIALISATION DE L'APPLICATION FASTAPI ---
 app = FastAPI()
