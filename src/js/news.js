@@ -1,8 +1,21 @@
 // js/news.js - VERSION FINALE SIMPLIFIÉE
 const API_BASE = "https://finanalyses.onrender.com/api"; // URL de production
 
+// Dans src/js/news.js
+
 function createNewsCard(article) {
-    // ... (la fonction createNewsCard reste la même)
+    return `
+        <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow duration-200 flex gap-4">
+            <img src="${article.image_url}" alt="" class="w-24 h-24 object-cover rounded">
+            <div class="flex-1">
+                <a href="${article.url}" target="_blank" rel="noopener noreferrer" class="block">
+                    <h3 class="font-semibold text-gray-800 hover:text-blue-600">${article.title}</h3>
+                    <p class="text-sm text-gray-600 mt-2">${article.description}</p> 
+                    <p class="text-xs text-gray-400 mt-3">Source: ${article.source}</p>
+                </a>
+            </div>
+        </div>
+    `;
 }
 
 async function fetchAndDisplayNews() {
