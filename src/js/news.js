@@ -1,6 +1,9 @@
 // Dans src/js/news.js
+const IS_LOCAL = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
+const API_BASE = IS_LOCAL ? "http://localhost:8000/api" : "https://finanalyses.onrender.com/api";
 
-
+// --- VARIABLES GLOBALES ---
+let currentCompanyData = null; // Stocke les données de l'entreprise principale pour la comparaison
 function createNewsCard(article) {
     // Cette fonction est maintenant plus robuste.
     // Elle vérifie que les valeurs existent avant de les utiliser.
@@ -19,6 +22,8 @@ function createNewsCard(article) {
                 <p class="text-sm text-gray-600 mt-2">${articleSnippet}</p>
                 <p class="text-xs text-gray-400 mt-3">Source: ${articleSource}</p>
             </a>
+            <!-- Dans la barre de navigation -->
+<a href="chat.html" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium">Chat AI</a>
         </div>
     `;
 }

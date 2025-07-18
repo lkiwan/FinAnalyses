@@ -1,86 +1,170 @@
-# main.py - VERSION COMPLÈTE ET CORRIGÉE
-import os  # <-- AJOUTER CET IMPORT
-from dotenv import load_dotenv  # <-- AJOUTER CET IMPORT
+# main.py - VERSION FINALE, PROPRE ET SÉCURISÉE
+
+import os
+from dotenv import load_dotenv
 import google.generativeai as genai
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
-import pandas as pd
 import requests
-from pydantic import BaseModel 
-load_dotenv()
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+from pydantic import BaseModel
+import pandas as pd 
 
-# Configurer l'API de Google Gemini
-genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# --- CONFIGURATION SÉCURISÉE DES CLÉS API ---
+# Charge les variables depuis le fichier .env (pour le local) ou l'environnement (pour Render)
+load_dotenv()
+GOOGLE_API_KEY = os.getenv('AIzaSyA9xXHezd6d67bPR9eab3eG8W7KSRlLIw4')
+MARKETAUX_API_KEY = os.getenv('baEVwwUiQCp6G1zeJNVG93KqcFWrgz5tp0qrqQ2I')
+
+# --- CONFIGURATION DE L'IA GEMINI ---
+# S'assure que la clé existe avant de configurer
+if GOOGLE_API_KEY:
+    genai.configure(api_key=GOOGLE_API_KEY)
+    model = genai.GenerativeModel('gemini-1.5-flash')
+else:
+    print("AVERTISSEMENT: La clé API Google n'est pas configurée. L'IA ne fonctionnera pas.")
+    model = None
+
+# --- INITIALISATION DE L'APPLICATION FASTAPI ---
 app = FastAPI()
-MARKETAUX_API_KEY = "baEVwwUiQCp6G1zeJNVG93KqcFWrgz5tp0qrqQ2I" 
-@app.get("/api/news")
-def get_real_time_news():
-    # (le code de la fonction qui appelle Marketaux)
-    # ...
-    url = f"https://api.marketaux.com/v1/news/all?countries=us,fr&filter_entities=true&limit=15&language=en&api_token={MARKETAUX_API_KEY}"
-    try:
-        response = requests.get(url)
-        response.raise_for_status() 
-        data = response.json()
-        # On adapte la structure de la réponse pour le frontend
-        return {"articles": data.get("data", [])}
-    except requests.exceptions.RequestException as e:
-        print(f"Erreur API Marketaux: {e}")
-        raise HTTPException(status_code=503, detail="Le service d'actualités est temporairement indisponible.")
-# Liste des origines autorisées à faire des requêtes vers notre API.
-# C'est ici que nous donnons la permission à notre serveur de fichiers HTML.
+
+# --- CONFIGURATION CORS ---
 origins = [
-    "https://finanalyses.pages.dev",  # L'adresse de votre site en ligne
-    "http://localhost:8080",      # Utile pour le développement local
+    "https://finanalyses.pages.dev",
+    "http://localhost:8080",
     "http://127.0.0.1:8080",
 ]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,      # On utilise notre nouvelle liste
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-chat_sessions = {}
-
-# On définit la structure des messages que le frontend va nous envoyer
+# --- MODÈLES DE DONNÉES ET STOCKAGE POUR LE CHAT ---
 class ChatMessage(BaseModel):
     session_id: str
     message: str
+
+chat_sessions = {} # Stockage simple en mémoire
+
+# --- FONCTIONS HELPER ---
+def get_stock_data(ticker: str):
+    stock = yf.Ticker(ticker.upper())
+    if stock.history(period="1d").empty:
+        raise HTTPException(status_code=404, detail=f"Symbole '{ticker}' non trouvé ou sans données.")
+    return stock
+
+def generate_ai_analysis_comment(data: dict) -> str:
+    if not model:
+        return "Le service d'analyse par IA est désactivé car la clé API n'est pas configurée."
+    try:
+        prompt = f"""
+        En tant qu'analyste financier pour des débutants, rédige une courte analyse (3-4 phrases) pour l'entreprise {data.get('name', 'N/A')}.
+        Le ton doit être neutre et informatif. Utilise un langage simple.
+        Voici les données clés :
+        - Prix : ${data.get('price', 0):.2f}
+        - Chiffre d'affaires : {data.get('revenue', 0) / 1e9:.1f} milliards $
+        - Bénéfice net : {data.get('netIncome', 0) / 1e9:.1f} milliards $
+        - PER : {data.get('peRatio', 0):.1f}
+        - ROE : {data.get('roe', 0) * 100:.1f}%
+        - Marge nette : {data.get('netMargin', 0) * 100:.1f}%
+        Basé sur ces données, mentionne un point fort et un point de vigilance. Conclus par une phrase neutre. Ne donne pas de conseil d'investissement.
+        """
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"Erreur lors de la génération par l'IA: {e}")
+        return "Le commentaire d'analyse par l'IA n'est pas disponible pour le moment."
+
+# --- POINTS D'ACCÈS DE L'API (ROUTES) ---
+
+@app.get("/api/news")
+def get_real_time_news():
+    if not MARKETAUX_API_KEY:
+        raise HTTPException(status_code=500, detail="La clé API pour les actualités n'est pas configurée.")
+    
+    url = f"https://api.marketaux.com/v1/news/all?countries=us,fr&filter_entities=true&limit=15&language=en&api_token={MARKETAUX_API_KEY}"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return {"articles": data.get("data", [])}
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur API Marketaux: {e}")
+        raise HTTPException(status_code=503, detail="Le service d'actualités est temporairement indisponible.")
+
+@app.get("/api/entreprise/{ticker}")
+def get_financial_data(ticker: str):
+    try:
+        stock = get_stock_data(ticker)
+        info = stock.info
+        
+        financial_data = {
+            "name": info.get("longName", ticker.upper()),
+            "symbol": info.get("symbol", ticker.upper()),
+            "logo_url": info.get("logo_url", ""),
+            "sector": info.get("sector", "N/A"),
+            "country": info.get("country", "N/A"),
+            "price": info.get("currentPrice") or info.get("previousClose") or 0,
+            "revenue": info.get("totalRevenue") or 0,
+            "netIncome": info.get("netIncomeToCommon") or 0,
+            "peRatio": info.get("trailingPE") or 0,
+            "roe": info.get("returnOnEquity") or 0,
+            "netMargin": info.get("profitMargins") or 0,
+            "dividendYield": info.get('dividendYield') or 0,
+            "financialScore": 8.2 # Placeholder
+        }
+
+        # On appelle l'IA AVANT de retourner le résultat
+        financial_data["analysisComment"] = generate_ai_analysis_comment(financial_data)
+        
+        return financial_data
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/chat")
 def chat_with_ai(chat_message: ChatMessage):
     session_id = chat_message.session_id
     user_message = chat_message.message
 
-    # Vérifie si une session de chat existe déjà pour cet utilisateur
-    if session_id not in chat_sessions:
-        # Si non, on en crée une nouvelle avec le contexte initial
-        print(f"Création d'une nouvelle session de chat pour : {session_id}")
-        chat_sessions[session_id] = model.start_chat(history=[
-            {"role": "user", "parts": ["Tu es FinAnalyse AI, un assistant financier expert..."]},
-            {"role": "model", "parts": ["Bonjour ! Comment puis-je vous aider..."]}
-        ])
+    if not model:
+        raise HTTPException(status_code=503, detail="Le service de chat IA est désactivé.")
 
-    # On récupère la session de l'utilisateur
+    # NOUVELLE VERSION (Généraliste)
+    if session_id not in chat_sessions:
+        print(f"Création d'une nouvelle session de chat pour : {session_id}")
+    # --- MODIFICATION ICI ---
+    # On donne de nouvelles instructions à l'IA pour qu'elle soit généraliste.
+    chat_sessions[session_id] = model.start_chat(history=[
+        {
+            "role": "user",
+            "parts": [
+                "Tu es FinAnalyse AI, un assistant conversationnel généraliste, amical et serviable. "
+                "Ton objectif est d'aider les utilisateurs en répondant à leurs questions sur une grande variété de sujets, "
+                "allant de la science à l'histoire, en passant par la cuisine ou la programmation. "
+                "Sois toujours poli, éthique et assure-toi que tes réponses sont sûres et appropriées. "
+                "Ne donne jamais d'informations dangereuses ou illégales."
+            ]
+        },
+        {
+            "role": "model",
+            "parts": ["Bonjour ! Je suis FinAnalyse AI, votre assistant personnel. Comment puis-je vous aider aujourd'hui ?"]
+        }
+    ])
+
     current_chat_session = chat_sessions[session_id]
 
     try:
-        # On envoie le message de l'utilisateur à sa session de chat
         response = current_chat_session.send_message(user_message)
-        # On renvoie la réponse de l'IA au format JSON
         return {"response": response.text}
     except Exception as e:
         print(f"Erreur lors de la conversation avec l'IA: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la communication avec l'assistant IA.")
 
-
+# (Les autres routes comme /historique, /screener, etc. peuvent être ajoutées ici si nécessaire)
 
 # --- NOUVELLE FONCTION D'ANALYSE PAR IA ---
 def generate_ai_analysis_comment(data: dict) -> str:

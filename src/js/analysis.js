@@ -1,9 +1,9 @@
 // js/analysis.js - VERSION FINALE ET COMPLÈTE EN JAVASCRIPT PUR
+const IS_LOCAL = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
+const API_BASE = IS_LOCAL ? "http://localhost:8000/api" : "https://finanalyses.onrender.com/api";
 
-// --- CONSTANTES ET VARIABLES GLOBALES ---
-const API_BASE = "https://finanalyse-api.onrender.com/api";
+// --- VARIABLES GLOBALES ---
 let currentCompanyData = null; // Stocke les données de l'entreprise principale pour la comparaison
-
 // --- FONCTIONS UTILITAIRES ---
 const safe = (value, formatter = String) => (value !== undefined && value !== null && !isNaN(value)) ? formatter(value) : "N/A";
 const formatCurrencyBillion = (n) => `$${(n / 1e9).toFixed(1)}B`;
