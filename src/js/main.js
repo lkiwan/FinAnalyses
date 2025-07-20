@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             searchResults.appendChild(item);
         });
         searchResults.classList.remove('hidden');
+        
     }
 
     let searchTimeout;
@@ -144,7 +145,170 @@ document.addEventListener("DOMContentLoaded", () => {
             countryResults.innerHTML = '<p class="text-center text-red-500">Impossible de charger la liste des entreprises.</p>';
         }
     });
-});
+    // Dans src/js/main.js, à l'intérieur de l'événement DOMContentLoaded
+
+    // --- FONCTIONNALITÉ 3 : TOP GAINERS & LOSERS ---
+
+    /**
+     * Crée le HTML pour une seule ligne d'une table (gagnant ou perdant).
+     * @param {object} stock - Les données de l'action.
+     */
+    function createMoverRow(stock) {
+        const changeClass = stock.changesPercentage > 0 ? 'text-green-400' : 'text-red-400';
+        
+        // La note de l'analyste n'est pas toujours disponible, on l'ignore pour l'instant.
+        // On pourrait l'ajouter plus tard avec une autre API si besoin.
+
+        return `
+            <div class="flex items-center justify-between p-2 rounded hover:bg-gray-700 cursor-pointer" onclick="redirectToAnalysis('${stock.symbol}')">
+                <div>
+                    <p class="font-bold text-lg">${stock.symbol}</p>
+                    <p class="text-sm text-gray-300 truncate">${stock.name}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold text-lg">${stock.price.toFixed(2)}</p>
+                    <p class="${changeClass} font-medium">${stock.changesPercentage.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Remplit une table avec les données des gagnants ou des perdants.
+     * @param {Array} data - La liste des actions.
+     * @param {string} elementId - L'ID de l'élément où injecter le HTML.
+     */
+    function renderMoverTable(data, elementId) {
+        const tableBody = document.getElementById(elementId);
+        if (!tableBody) return;
+
+        tableBody.innerHTML = ''; // Vider le message de chargement
+        const top5 = data.slice(0, 5); // On affiche seulement les 5 premiers
+
+        top5.forEach(stock => {
+            tableBody.innerHTML += createMoverRow(stock);
+        });
+    }
+
+    /**
+     * Charge les données des gagnants et perdants depuis l'API et lance le rendu.
+     */
+    async function loadMarketMovers() {
+        const gainersTable = document.getElementById('gainers-table-body');
+        const losersTable = document.getElementById('losers-table-body');
+        
+        try {
+            // On lance les deux requêtes en parallèle pour gagner du temps
+            const [gainersResponse, losersResponse] = await Promise.all([
+                fetch(`${API_BASE}/gainers`),
+                fetch(`${API_BASE}/losers`)
+            ]);
+
+            if (!gainersResponse.ok || !losersResponse.ok) {
+                throw new Error('Une des requêtes pour les movers a échoué.');
+            }
+
+            const gainersData = await gainersResponse.json();
+            const losersData = await losersResponse.json();
+
+            renderMoverTable(gainersData, 'gainers-table-body');
+            renderMoverTable(losersData, 'losers-table-body');
+
+        } catch (error) {
+            console.error("Erreur chargement Gainers/Losers:", error);
+            if (gainersTable) gainersTable.innerHTML = '<p class="text-red-400">Impossible de charger les données.</p>';
+            if (losersTable) losersTable.innerHTML = '<p class="text-red-400">Impossible de charger les données.</p>';
+        }
+    }
+
+    // On lance le chargement des données au démarrage de la page
+    loadMarketMovers();
+
+// Dans src/js/main.js, à l'intérieur de l'événement DOMContentLoaded
+
+    // --- FONCTIONNALITÉ 3 : TOP GAINERS & LOSERS ---
+
+    /**
+     * Crée le HTML pour une seule ligne d'une table (gagnant ou perdant).
+     * @param {object} stock - Les données de l'action.
+     */
+    function createMoverRow(stock) {
+        const changeClass = stock.changesPercentage > 0 ? 'text-green-400' : 'text-red-400';
+        
+        // La note de l'analyste n'est pas toujours disponible, on l'ignore pour l'instant.
+        // On pourrait l'ajouter plus tard avec une autre API si besoin.
+
+        return `
+            <div class="flex items-center justify-between p-2 rounded hover:bg-gray-700 cursor-pointer" onclick="redirectToAnalysis('${stock.symbol}')">
+                <div>
+                    <p class="font-bold text-lg">${stock.symbol}</p>
+                    <p class="text-sm text-gray-300 truncate">${stock.name}</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold text-lg">${stock.price.toFixed(2)}</p>
+                    <p class="${changeClass} font-medium">${stock.changesPercentage.toFixed(2)}%</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Remplit une table avec les données des gagnants ou des perdants.
+     * @param {Array} data - La liste des actions.
+     * @param {string} elementId - L'ID de l'élément où injecter le HTML.
+     */
+    function renderMoverTable(data, elementId) {
+        const tableBody = document.getElementById(elementId);
+        if (!tableBody) return;
+
+        tableBody.innerHTML = ''; // Vider le message de chargement
+        const top5 = data.slice(0, 5); // On affiche seulement les 5 premiers
+
+        top5.forEach(stock => {
+            tableBody.innerHTML += createMoverRow(stock);
+        });
+    }
+
+    /**
+     * Charge les données des gagnants et perdants depuis l'API et lance le rendu.
+     */
+    async function loadMarketMovers() {
+        const gainersTable = document.getElementById('gainers-table-body');
+        const losersTable = document.getElementById('losers-table-body');
+        
+        try {
+            // On lance les deux requêtes en parallèle pour gagner du temps
+            const [gainersResponse, losersResponse] = await Promise.all([
+                fetch(`${API_BASE}/gainers`),
+                fetch(`${API_BASE}/losers`)
+            ]);
+
+            if (!gainersResponse.ok || !losersResponse.ok) {
+                throw new Error('Une des requêtes pour les movers a échoué.');
+            }
+
+            const gainersData = await gainersResponse.json();
+            const losersData = await losersResponse.json();
+
+            renderMoverTable(gainersData, 'gainers-table-body');
+            renderMoverTable(losersData, 'losers-table-body');
+
+        } catch (error) {
+            console.error("Erreur chargement Gainers/Losers:", error);
+            if (gainersTable) gainersTable.innerHTML = '<p class="text-red-400">Impossible de charger les données.</p>';
+            if (losersTable) losersTable.innerHTML = '<p class="text-red-400">Impossible de charger les données.</p>';
+        }
+    }
+
+    // On lance le chargement des données au démarrage de la page
+    loadMarketMovers();
+
+}); // <-- Assurez-vous que ce code est bien à l'intérieur de la parenthèse fermante de l'événement.
+
+
+
+}); // <-- Assurez-vous que ce code est bien à l'intérieur de la parenthèse fermante de l'événement.
+
 
 /**
  * Fonction de redirection globale (votre code original).

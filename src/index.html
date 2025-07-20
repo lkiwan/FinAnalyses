@@ -103,6 +103,59 @@
               Analyser
             </button>
           </div>
+          <!-- Dans src/index.html -->
+
+          <!-- ... (votre section de recherche principale) ... -->
+          <div
+            id="search-results"
+            class="max-w-xl mx-auto mt-2 bg-white rounded-lg shadow-lg hidden"
+          ></div>
+
+          <!-- =============================================================== -->
+          <!-- ===  NOUVELLE SECTION : TOP GAINERS & LOSERS - DÉBUT  === -->
+          <!-- =============================================================== -->
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+              <!-- Colonne Top Daily Gainers -->
+              <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-1">Top Daily Gainers</h2>
+                <p class="text-sm text-gray-400 mb-6">
+                  Découvrez les actions avec les plus grands gains.
+                </p>
+                <div id="gainers-table-body" class="space-y-4">
+                  <!-- Le JavaScript va remplir cette section -->
+                  <p class="text-gray-400">Chargement des données...</p>
+                </div>
+                <a
+                  href="#"
+                  class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+                  >Voir plus →</a
+                >
+              </div>
+
+              <!-- Colonne Top Daily Losers -->
+              <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-1">Top Daily Losers</h2>
+                <p class="text-sm text-gray-400 mb-6">
+                  Découvrez les actions avec les plus grandes pertes.
+                </p>
+                <div id="losers-table-body" class="space-y-4">
+                  <!-- Le JavaScript va remplir cette section -->
+                  <p class="text-gray-400">Chargement des données...</p>
+                </div>
+                <a
+                  href="#"
+                  class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+                  >Voir plus →</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- =============================================================== -->
+          <!-- ===   NOUVELLE SECTION : TOP GAINERS & LOSERS - FIN   === -->
+          <!-- =============================================================== -->
+
+          <!-- ... (votre section "Suggestions de recherche") ... -->
 
           <!-- Résultats dynamiques -->
           <div
@@ -123,6 +176,48 @@
       <section class="py-16">
         <!-- ... contenu à ajouter ... -->
       </section>
+
+      <!-- =============================================================== -->
+      <!-- ===  NOUVELLE SECTION : TOP GAINERS & LOSERS - DÉBUT  === -->
+      <!-- =============================================================== -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          <!-- Gagnants -->
+          <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">Top Daily Gainers</h2>
+            <p class="text-sm text-gray-400 mb-6">
+              Découvrez les actions avec les plus grands gains.
+            </p>
+            <div id="gainers-table-body" class="space-y-4">
+              <p class="text-gray-400">Chargement des données...</p>
+            </div>
+            <a
+              href="#"
+              class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+              >Voir plus →</a
+            >
+          </div>
+
+          <!-- Perdants -->
+          <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-1">Top Daily Losers</h2>
+            <p class="text-sm text-gray-400 mb-6">
+              Découvrez les actions avec les plus grandes pertes.
+            </p>
+            <div id="losers-table-body" class="space-y-4">
+              <p class="text-gray-400">Chargement des données...</p>
+            </div>
+            <a
+              href="#"
+              class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+              >Voir plus →</a
+            >
+          </div>
+        </div>
+      </div>
+      <!-- =============================================================== -->
+      <!-- ===   NOUVELLE SECTION : TOP GAINERS & LOSERS - FIN   === -->
+      <!-- =============================================================== -->
 
       <!-- Suggestions de recherche -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
