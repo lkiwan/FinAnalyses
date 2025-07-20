@@ -18,6 +18,7 @@ import pandas as pd
 load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 MARKETAUX_API_KEY = os.getenv('MARKETAUX_API_KEY')
+FMP_API_KEY = os.getenv('FMP_API_KEY')
 
 model = None
 
@@ -143,6 +144,52 @@ def get_financial_data(ticker: str):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+@app.get("/api/search")
+def search_symbols(query: str):
+    """
+    Recherche des symboles boursiers à partir d'un nom d'entreprise.
+    """
+    if not FMP_API_KEY:
+        raise HTTPException(status_code=500, detail="La clé API de recherche n'est pas configurée.")
+    
+    url = f"https://financialmodelingprep.com/api/v3/search?query={query}&limit=10&apikey={FMP_API_KEY}"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        # On renvoie les données directement au frontend
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur API FMP: {e}")
+        raise HTTPException(status_code=503, detail="Le service de recherche est indisponible.")
+    
+    
+# Dans main.py
+
+# ... (vos autres points d'accès)
+
+@app.get("/api/companies-by-country/{country_code}")
+def get_companies_by_country(country_code: str):
+    """
+    Récupère une liste d'entreprises pour un code de pays donné (ex: US, FR).
+    """
+    if not FMP_API_KEY:
+        raise HTTPException(status_code=500, detail="La clé API de recherche n'est pas configurée.")
+    
+    # L'API FMP pour lister les actions
+    url = f"https://financialmodelingprep.com/api/v3/stock-screener?country={country_code.upper()}&limit=20&apikey={FMP_API_KEY}"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return data
+    except requests.exceptions.RequestException as e:
+        print(f"Erreur API FMP (country): {e}")
+        raise HTTPException(status_code=503, detail="Le service de recherche par pays est indisponible.")
 
 @app.post("/api/chat")
 def chat_with_ai(chat_message: ChatMessage):
