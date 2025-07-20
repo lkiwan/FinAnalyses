@@ -104,6 +104,10 @@ def get_real_time_news():
         print(f"Erreur API Marketaux: {e}")
         raise HTTPException(status_code=503, detail="Le service d'actualités est temporairement indisponible.")
 
+
+
+
+
 @app.get("/api/entreprise/{ticker}")
 def get_financial_data(ticker: str):
     try:
