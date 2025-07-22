@@ -46,14 +46,18 @@
   </head>
   <body class="bg-gray-100 font-sans">
     <!-- Navigation -->
+    <!-- REMPLACEZ L'ANCIENNE BALISE <nav> PAR CELLE-CI -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
+          <!-- Logo -->
           <a href="index.html" class="flex items-center">
             <i class="fas fa-chart-line text-blue-600 text-2xl mr-2"></i>
             <span class="text-xl font-bold text-gray-800">FinAnalyse</span>
           </a>
-          <div class="flex items-center space-x-4">
+
+          <!-- Menu pour ordinateur -->
+          <div class="hidden md:flex items-center space-x-4">
             <a
               href="index.html"
               class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
@@ -65,18 +69,83 @@
               >Actualités</a
             >
             <a
+              href="calendar.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Calendrier</a
+            >
+            <a
+              href="correlation.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Corrélation</a
+            >
+            <a
               href="chat.html"
               class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
               >Chat AI</a
             >
           </div>
+
+          <!-- Bouton Hamburger pour mobile -->
+          <div class="md:hidden flex items-center">
+            <button
+              id="hamburger-button"
+              class="text-gray-800 hover:text-blue-600 focus:outline-none"
+              aria-label="Ouvrir le menu principal"
+            >
+              <span class="sr-only">Ouvrir menu</span>
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Mobile (caché par défaut) -->
+      <div id="mobile-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a
+            href="index.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Accueil</a
+          >
+          <a
+            href="news.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Actualités</a
+          >
+          <a
+            href="calendar.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Calendrier</a
+          >
+          <a
+            href="correlation.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Corrélation</a
+          >
+          <a
+            href="chat.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Chat AI</a
+          >
         </div>
       </div>
     </nav>
 
     <!-- Main Content -->
     <main class="fade-in">
-      <div class="gradient-bg text-white py-20">
+      <div class="gradient-bg text-white py-12 md:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center">
             Analyse Financière Automatisée
@@ -269,6 +338,6 @@
       </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script src="js/nav.js"></script>
   </body>
 </html>
