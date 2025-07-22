@@ -175,7 +175,7 @@ def get_advanced_metrics(ticker: str):
 def get_dividend_data(ticker: str):
     try:
         stock = get_stock_data(ticker)
-        dividends = stock.dividends.last('5Y')
+        dividends = stock.dividends.last('5YE')
         annual_dividends = {}
         if not dividends.empty:
             annual_dividends = dividends.resample('YE').sum().to_dict()
