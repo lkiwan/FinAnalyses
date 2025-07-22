@@ -1,5 +1,3 @@
-// js/main.js - VERSION FINALE, PROPRE ET ROBUSTE
-
 /**
  * Fonction de redirection globale, doit être accessible par les attributs onclick.
  * @param {string} ticker Le symbole boursier à analyser.
