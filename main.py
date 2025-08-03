@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#<<<<<<< HEAD
 # main.py - VERSION FINALE, PROPRE ET SÉCURISÉE
 
 import os
@@ -159,7 +159,7 @@ def chat_with_ai(chat_message: ChatMessage):
         return {"response": response.text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur de communication avec l'IA: {e}")
-=======
+
 # (Les autres routes comme /historique, /screener, etc. peuvent être ajoutées ici si nécessaire)
 # main.py - VERSION FINALE, PROPRE ET SÉCURISÉE
 
@@ -714,4 +714,4 @@ def get_news(source: str):
     if source not in MOCK_NEWS:
         raise HTTPException(status_code=404, detail="Source not found")
     return {"articles": MOCK_NEWS[source]}
->>>>>>> d58938e61d14eb9600e815d9a266ed7dad845f76
+
