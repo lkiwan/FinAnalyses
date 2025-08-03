@@ -6,10 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-btn');
 
-    // Si les éléments du chat n'existent pas sur cette page, ne rien faire.
-    if (!chatBox || !chatInput || !sendBtn) {
-        return;
-    }
+    if (!chatBox || !chatInput || !sendBtn) return;
 
     // --- CONFIGURATION ---
     const IS_LOCAL = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1');
@@ -25,21 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FONCTIONS DE L'INTERFACE ---
     function appendMessage(text, sender) {
         const messageDiv = document.createElement('div');
-        messageDiv.classList.add('p-3', 'rounded-lg', 'max-w-md', 'break-words', 'fade-in');
+        messageDiv.classList.add('p-3', 'rounded-lg', 'max-w-md', 'break-words');
 
         if (sender === 'user') {
             messageDiv.classList.add('bg-blue-600', 'text-white', 'self-end', 'ml-auto');
         } else {
             messageDiv.classList.add('bg-gray-200', 'text-gray-800', 'self-start', 'mr-auto');
         }
-        
-        // Simule la frappe pour la réponse de l'IA
-        if (sender === 'ai' && text === "...") {
-            messageDiv.innerHTML = '<span class="typing-indicator"><span></span><span></span><span></span></span>';
-        } else {
-            messageDiv.textContent = text;
-        }
-
+        messageDiv.textContent = text;
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -52,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         chatInput.value = '';
         chatInput.disabled = true;
         sendBtn.disabled = true;
-        appendMessage("...", 'ai'); // Indicateur de frappe
+        
+        appendMessage("...", 'ai'); // Indicateur de frappe simple
 
         try {
             const response = await fetch(`${API_BASE}/chat`, {
@@ -64,23 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            // Supprime l'indicateur de frappe
-            if (chatBox.lastChild) {
-                chatBox.removeChild(chatBox.lastChild);
-            }
+            chatBox.removeChild(chatBox.lastChild); // Supprime "..."
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'La réponse du serveur n\'est pas OK.');
+                // Gère spécifiquement le cas où l'IA est désactivée
+                if (response.status === 503) {
+                     throw new Error("Le service de Chat AI est actuellement désactivé sur le serveur.");
+                }
+                throw new Error(errorData.detail || 'Erreur inconnue du serveur.');
             }
 
             const data = await response.json();
             appendMessage(data.response, 'ai');
 
         } catch (error) {
-            console.error("Erreur lors de l'envoi du message:", error);
-            // S'assurer que le dernier message "..." est retiré même en cas d'erreur
-            if (chatBox.lastChild && chatBox.lastChild.querySelector('.typing-indicator')) {
+             if (chatBox.lastChild && chatBox.lastChild.textContent === "...") {
                 chatBox.removeChild(chatBox.lastChild);
             }
             appendMessage(`Désolé, une erreur est survenue : ${error.message}`, 'ai');
@@ -99,6 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Message de bienvenue
-    appendMessage("Bonjour ! Je suis FinAnalyse AI. Posez-moi une question sur la finance ou tout autre sujet.", 'ai');
+    // Message de bienvenue initial
+    appendMessage("Bonjour ! Je suis FinAnalyse AI. Posez-moi une question sur la finance.", 'ai');
 });
