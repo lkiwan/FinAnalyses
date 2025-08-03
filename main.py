@@ -1,4 +1,4 @@
-#<<<<<<< HEAD
+
 # main.py - VERSION FINALE, PROPRE ET SÉCURISÉE
 
 import os
