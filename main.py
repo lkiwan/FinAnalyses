@@ -1,6 +1,4 @@
-
 # main.py - VERSION FINALE, PROPRE ET SÉCURISÉE
-
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
