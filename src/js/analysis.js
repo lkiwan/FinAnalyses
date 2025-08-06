@@ -143,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // === C'EST LA PARTIE QUI MANQUAIT POUR LE BOUTON DE COMPARAISON ===
     // ===================================================================
     document.getElementById("add-to-comparison").addEventListener("click", async () => {
+      console.log("Le bouton Comparer a été cliqué !"); 
       const compareTicker = document.getElementById("compare-ticker").value.trim().toUpperCase();
       
       if (!compareTicker || !currentCompanyData) {
