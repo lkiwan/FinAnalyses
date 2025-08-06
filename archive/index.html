@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinAnalyse - Analyse Financière Automatisée</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <!-- REMPLACEZ L'ANCIENNE BALISE <nav> PAR CELLE-CI -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <!-- Logo -->
+          <a href="index.html" class="flex items-center">
+            <i class="fas fa-chart-line text-blue-600 text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-gray-800">FinAnalyse</span>
+          </a>
+
+          <!-- Menu pour ordinateur -->
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="index.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Accueil</a
+            >
+            <a
+              href="news.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Actualités</a
+            >
+            <a
+              href="calendar.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Calendrier</a
+            >
+            <a
+              href="correlation.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Corrélation</a
+            >
+            <a
+              href="chat.html"
+              class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md font-medium"
+              >Chat AI</a
+            >
+          </div>
+
+          <!-- Bouton Hamburger pour mobile -->
+          <div class="md:hidden flex items-center">
+            <button
+              id="hamburger-button"
+              class="text-gray-800 hover:text-blue-600 focus:outline-none"
+              aria-label="Ouvrir le menu principal"
+            >
+              <span class="sr-only">Ouvrir menu</span>
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Mobile (caché par défaut) -->
+      <div id="mobile-menu" class="hidden md:hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a
+            href="index.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Accueil</a
+          >
+          <a
+            href="news.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Actualités</a
+          >
+          <a
+            href="calendar.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Calendrier</a
+          >
+          <a
+            href="correlation.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Corrélation</a
+          >
+          <a
+            href="chat.html"
+            class="block text-gray-600 hover:bg-blue-50 px-3 py-2 rounded-md font-medium"
+            >Chat AI</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="fade-in">
+      <div class="gradient-bg text-white py-12 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4 text-center">
+            Analyse Financière Automatisée
+          </h1>
+          <p class="text-xl mb-8 text-blue-100 text-center">
+            Obtenez des insights financiers clairs et rapides.
+          </p>
+
+          <!-- Barre de recherche -->
+          <div class="max-w-xl mx-auto flex gap-2">
+            <label for="company-search" class="sr-only"
+              >Nom ou symbole boursier</label
+            >
+            <input
+              type="text"
+              id="company-search"
+              placeholder="Nom ou symbole boursier (ex: AAPL)"
+              class="px-4 py-3 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 w-full"
+            />
+            <button
+              id="analyze-btn"
+              class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-200"
+            >
+              Analyser
+            </button>
+          </div>
+          <!-- Dans src/index.html -->
+
+          <!-- ... (votre section de recherche principale) ... -->
+          <div
+            id="search-results"
+            class="max-w-xl mx-auto mt-2 bg-white rounded-lg shadow-lg hidden"
+          ></div>
+
+          <!-- =============================================================== -->
+          <!-- ===  NOUVELLE SECTION : TOP GAINERS & LOSERS - DÉBUT  === -->
+          <!-- =============================================================== -->
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+              <!-- Colonne Top Daily Gainers -->
+              <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-1">Top Daily Gainers</h2>
+                <p class="text-sm text-gray-400 mb-6">
+                  Découvrez les actions avec les plus grands gains.
+                </p>
+                <div id="gainers-table-body" class="space-y-4">
+                  <!-- Le JavaScript va remplir cette section -->
+                  <p class="text-gray-400">Chargement des données...</p>
+                </div>
+                <a
+                  href="#"
+                  class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+                  >Voir plus →</a
+                >
+              </div>
+
+              <!-- Colonne Top Daily Losers -->
+              <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-1">Top Daily Losers</h2>
+                <p class="text-sm text-gray-400 mb-6">
+                  Découvrez les actions avec les plus grandes pertes.
+                </p>
+                <div id="losers-table-body" class="space-y-4">
+                  <!-- Le JavaScript va remplir cette section -->
+                  <p class="text-gray-400">Chargement des données...</p>
+                </div>
+                <a
+                  href="#"
+                  class="inline-block mt-6 text-blue-400 hover:text-blue-300 font-semibold"
+                  >Voir plus →</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- =============================================================== -->
+          <!-- ===   NOUVELLE SECTION : TOP GAINERS & LOSERS - FIN   === -->
+          <!-- =============================================================== -->
+
+          <!-- ... (votre section "Suggestions de recherche") ... -->
+
+          <!-- Résultats dynamiques -->
+          <div
+            id="search-results"
+            class="max-w-xl mx-auto mt-2 bg-white rounded-lg shadow-lg hidden"
+          >
+            <!-- Les suggestions de recherche apparaîtront ici -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Section "Comment ça marche ?" -->
+      <section class="py-16 bg-gray-50">
+        <!-- ... contenu à ajouter ... -->
+      </section>
+
+      <!-- Section "Ce qu'ils disent de nous" -->
+      <section class="py-16">
+        <!-- ... contenu à ajouter ... -->
+      </section>
+
+      <!-- Suggestions de recherche -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h2 class="text-2xl font-semibold text-center mb-8 text-gray-700">
+          Suggestions de recherche
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div
+            onclick="redirectToAnalysis('AAPL')"
+            class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col items-center justify-center text-center card-hover"
+          >
+            <div class="text-4xl mb-3 text-gray-700">
+              <i class="fab fa-apple"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Apple</h3>
+            <p class="text-sm text-gray-500">AAPL</p>
+          </div>
+          <div
+            onclick="redirectToAnalysis('MSFT')"
+            class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col items-center justify-center text-center card-hover"
+          >
+            <div class="text-4xl mb-3 text-blue-600">
+              <i class="fab fa-microsoft"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Microsoft</h3>
+            <p class="text-sm text-gray-500">MSFT</p>
+          </div>
+          <div
+            onclick="redirectToAnalysis('AMZN')"
+            class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col items-center justify-center text-center card-hover"
+          >
+            <div class="text-4xl mb-3 text-yellow-500">
+              <i class="fab fa-amazon"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Amazon</h3>
+            <p class="text-sm text-gray-500">AMZN</p>
+          </div>
+          <div
+            onclick="redirectToAnalysis('TSLA')"
+            class="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer flex flex-col items-center justify-center text-center card-hover"
+          >
+            <div class="text-4xl mb-3 text-red-600">
+              <i class="fas fa-car"></i>
+            </div>
+            <h3 class="font-semibold text-gray-900">Tesla</h3>
+            <p class="text-sm text-gray-500">TSLA</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explorer par Pays -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <h2 class="text-2xl font-semibold text-center mb-8 text-gray-700">
+          Explorer par Pays
+        </h2>
+        <div class="max-w-sm mx-auto flex items-center gap-2">
+          <label for="country-select" class="sr-only">Choisir un pays</label>
+          <select
+            id="country-select"
+            class="flex-grow p-3 border border-gray-300 rounded-lg"
+          >
+            <option value="">-- Sélectionner un pays --</option>
+            <option value="US">États-Unis</option>
+            <option value="FR">France</option>
+            <option value="CA">Canada</option>
+            <option value="DE">Allemagne</option>
+            <!-- Ajoutez d'autres pays si vous le souhaitez -->
+          </select>
+        </div>
+        <div
+          id="country-results"
+          class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          <!-- Les entreprises du pays sélectionné apparaîtront ici -->
+        </div>
+        <div id="see-more-container" class="text-center mt-8 hidden">
+          <button
+            id="see-more-btn"
+            class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold"
+          >
+            Voir plus
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p>© 2025 FinAnalyse. Toutes les données sont à titre informatif.</p>
+      </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script src="js/nav.js"></script>
+  </body>
+</html>
