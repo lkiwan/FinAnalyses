@@ -353,28 +353,44 @@ def get_dividend_data(ticker: str):
 
 @app.get("/api/screener")
 def stock_screener(sector: str = None, pe_max: float = None, dividend_min: float = None):
-    # Note: Ceci est un exemple simplifié. Un vrai screener serait beaucoup plus complexe.
-    sample_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "JPM", "JNJ", "WMT", "PG", "XOM", "NVDA", "V", "UNH", "HD"]
-    results = []
-    
-    for ticker in sample_tickers:
-        try:
-            info = yf.Ticker(ticker).info
-            if not info.get('longName'): continue
-            
-            include = True
-            if sector and info.get('sector') != sector: include = False
-            if pe_max is not None and info.get('trailingPE', float('inf')) > pe_max: include = False
-            if dividend_min is not None and info.get('dividendYield', 0) < (dividend_min / 100): include = False
-            
-            if include:
-                results.append({
-                    "symbol": info.get('symbol'), "name": info.get('longName'),
-                    "pe": info.get('trailingPE'), "dividendYield": info.get('dividendYield'),
-                })
-        except Exception:
-            continue
-    return {"results": results}
+    # Vérifie si la clé API FMP est disponible
+    if not FMP_API_KEY:
+        raise HTTPException(status_code=503, detail="La clé API pour le screener n'est pas configurée sur le serveur.")
+
+    # Construit l'URL de l'API FMP avec les paramètres
+    base_url = "https://financialmodelingprep.com/api/v3/stock-screener"
+    params = {
+        "apikey": FMP_API_KEY,
+        "limit": 100  # On peut récupérer jusqu'à 100 résultats
+    }
+
+    if sector:
+        params["sector"] = sector
+    if pe_max is not None:
+        params["priceEarningRatio"] = pe_max  # FMP utilise "priceEarningRatio" pour le P/E Ratio
+    if dividend_min is not None:
+        # FMP attend le % de dividende, donc on n'a pas besoin de le diviser par 100
+        params["dividendYield"] = dividend_min
+
+    try:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()  # Lève une exception si la requête échoue (ex: 4xx, 5xx)
+        
+        # Formate les résultats pour correspondre à ce que le frontend attend
+        data = response.json()
+        results = []
+        for item in data:
+            results.append({
+                "symbol": item.get("symbol"),
+                "name": item.get("companyName"),
+                "pe": item.get("priceEarningRatio"),
+                "dividendYield": item.get("dividendYield")
+            })
+
+        return {"results": results}
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=503, detail=f"Erreur de communication avec le service de screener: {e}")
 
 @app.get("/api/search")
 def search_symbols(query: str):
